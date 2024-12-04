@@ -40,7 +40,6 @@ def ask(prompt, model="qwen2.5-coder:14b", api_host="http://ollama-host:11434"):
         api_host (str): The URL of the locally hosted backend (default: http://ollama-host:11434).
     """
     import requests, ollama
-    from IPython.display import display, Markdown, clear_output
     import time,json
     try:
         client = ollama.Client(
@@ -65,9 +64,18 @@ def ask(prompt, model="qwen2.5-coder:14b", api_host="http://ollama-host:11434"):
         print(f"Error: {e}")
 
 
-from IPython.core.magic import (register_line_magic, register_cell_magic, register_line_cell_magic)
 
-@register_line_magic("?")
+# @register_line_magic("?")
 def lm_ask(line):
     ask(line)
 
+def register_magic():
+    from IPython.core.magic import (register_line_magic, register_cell_magic, register_line_cell_magic)
+    from IPython import get_ipython
+    ip=get_ipython()
+    if ip is None:
+        print("Not in an IPython environment")
+    else:
+        ip.register_magic_function(lm_ask,'line', 'ask')
+
+register_magic()
